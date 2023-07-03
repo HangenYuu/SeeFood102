@@ -1,0 +1,12 @@
+torch
+torchvision
+timm
+tqdm
+lightning
+torchinfo
+mlxtend
+jupyter
+ipykernel
+tensorboard
+kaggle
+wandb
