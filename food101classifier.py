@@ -10,11 +10,12 @@ from torch.utils.data import random_split, DataLoader
 torch.set_float32_matmul_precision('high')
 
 class Food101DataModule(L.LightningDataModule):
-    def __init__(self, transform, data_dir: Union[str, Path] = "data", batch_size: int = 128) -> None:
+    def __init__(self, train_transform, test_transform, data_dir: Union[str, Path] = "data", batch_size: int = 128) -> None:
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.transform = transform
+        self.train_transform = train_transform
+        self.test_transform = test_transform
 
     def prepare_data(self):
         Food101(self.data_dir, split='train', download=True) # type: ignore
@@ -22,14 +23,16 @@ class Food101DataModule(L.LightningDataModule):
 
     def setup(self, stage: str = 'fit'):
         if stage == 'fit':
-            food101_full = Food101(self.data_dir, split='train', download=True, transform=self.transform) # type: ignore
-            self.food101_train, self.food101_val = random_split(food101_full, [0.8, 0.2]) # type: ignore
+            food101_train = Food101(self.data_dir, split='train', download=True, transform=self.train_transform) # type: ignore
+            food101_test = Food101(self.data_dir, split='train', download=True, transform=self.test_transform) # type: ignore
+            self.food101_train, _ = random_split(food101_train, [0.8, 0.2], generator=torch.Generator().manual_seed(42)) # type: ignore
+            _, self.food101_val = random_split(food101_test, [0.8, 0.2], generator=torch.Generator().manual_seed(42)) # type: ignore
 
         if stage == 'test':
-            self.food101_test = Food101(self.data_dir, split='test', download=True, transform=self.transform) # type: ignore
+            self.food101_test = Food101(self.data_dir, split='test', download=True, transform=self.test_transform) # type: ignore
 
         if stage == "predict":
-            self.food101_predict = Food101(self.data_dir, split='test', download=True, transform=self.transform) # type: ignore
+            self.food101_predict = Food101(self.data_dir, split='test', download=True, transform=self.test_transform) # type: ignore
 
     def train_dataloader(self):
         return DataLoader(self.food101_train, batch_size=self.batch_size, num_workers=4, pin_memory=True)
