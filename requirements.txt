@@ -4,11 +4,6 @@ timm
 tqdm
 lightning
 torchinfo
-mlxtend
 jupyter
 ipykernel
 tensorboard
-einops
-transformers
-datasets
-wandb
