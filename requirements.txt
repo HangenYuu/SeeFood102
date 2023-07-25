@@ -8,3 +8,6 @@ jupyter
 ipykernel
 tensorboard
 hydra-core
+hydra-colorlog
+dvc
+dvc-s3

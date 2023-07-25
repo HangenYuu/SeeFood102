@@ -1,5 +1,6 @@
 data
-models
 runs
-models
+outputs
 __pycache__
+.hydra
+*.log

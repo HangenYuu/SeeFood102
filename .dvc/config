@@ -1,0 +1,6 @@
+[core]
+    analytics = false
+    remote = awsremote
+['remote "awsremote"']
+    url = s3://food101
+    version_aware = true
