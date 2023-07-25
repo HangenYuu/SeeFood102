@@ -42,5 +42,5 @@ class Food101Predictor:
 if __name__ == "__main__":
     image_path = "data/food-101/images/churros/17547.jpg"
     pil_image = Image.open(image_path)
-    predictor = Food101Predictor("~/SeeFood102/models/levit_256.fb_dist_in1k/checkpoints.ckpt")
+    predictor = Food101Predictor("~/SeeFood102/models/hf_hub:timm/levit_256.fb_dist_in1k/checkpoints.ckpt")
     print(predictor.predict(pil_image))
