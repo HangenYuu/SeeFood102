@@ -12,7 +12,7 @@ torch.set_float32_matmul_precision('high')
 @hydra.main(config_path="./configs", config_name="config", version_base=None)
 def main(cfg):
     logger = TensorBoardLogger("runs", name=f"{cfg.model.name}/logs")
-    food_model = Food101Classifier(cfg.model.name)
+    food_model = Food101Classifier("hf_hub:timm/" + cfg.model.name + ".fb_dist_in1k")
     transform = transforms.Compose([
                     transforms.Resize(256),
                     transforms.CenterCrop(224),
