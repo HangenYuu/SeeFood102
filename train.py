@@ -13,7 +13,7 @@ def main():
     model = "levit_256.fb_dist_in1k"
     print(model)
     logger = TensorBoardLogger("runs", version=1, name=f"{model}/logs")
-    food_model = Food101Classifier("hf_hub:timm/"+model)
+    food_model = Food101Classifier()
     data_cfg = timm.data.resolve_data_config(food_model.model.pretrained_cfg) # type: ignore
     transform = timm.data.create_transform(**data_cfg) # type: ignore
     food_data = Food101DataModule(transform)
