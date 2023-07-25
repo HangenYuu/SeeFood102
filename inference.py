@@ -9,7 +9,7 @@ class Food101Predictor:
         if torch.cuda.is_available():
             self.model = Food101Classifier.load_from_checkpoint(model_path)
         else:
-            self.model = Food101Classifier.load_from_checkpoint(model_path).to('cpu')
+            self.model = Food101Classifier.load_from_checkpoint(model_path, map_location='cpu')
         self.model.eval()
         self.model.freeze()
         self.transform = transforms.Compose([
@@ -29,6 +29,8 @@ class Food101Predictor:
         if torch.cuda.is_available():
             print('CUDA device detected. Switched to CUDA device for faster inference')
             input_batch = input_batch.to('cuda')
+        else:
+            print('Using CPU for inference. Will be slower')
         
         with torch.inference_mode():
             output = self.model(input_batch)
@@ -40,7 +42,7 @@ class Food101Predictor:
         return result
     
 if __name__ == "__main__":
-    image_path = "data/food-101/images/churros/17547.jpg"
+    image_path = "pablo-pacheco-D3Mag4BKqns-unsplash.jpg"
     pil_image = Image.open(image_path)
-    predictor = Food101Predictor("~/SeeFood102/models/hf_hub:timm/levit_256.fb_dist_in1k/checkpoints.ckpt")
+    predictor = Food101Predictor("models/levit_256/checkpoints.ckpt")
     print(predictor.predict(pil_image))
