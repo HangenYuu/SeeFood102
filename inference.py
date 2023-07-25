@@ -7,7 +7,7 @@ class Food101Predictor:
     def __init__(self, model_path) -> None:
         self.model_path = model_path
         if torch.cuda.is_available():
-            self.model = Food101Classifier.load_from_checkpoint(model_path)
+            self.model = Food101Classifier.load_from_checkpoint(model_path) # type: ignore
         else:
             self.model = Food101Classifier.load_from_checkpoint(model_path, map_location='cpu')
         self.model.eval()
