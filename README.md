@@ -9,3 +9,5 @@ pip install -r requirements.txt
 
 ## Setup DVC
 The setup depends on your choice of cloud storage. I ~~was forced to choose S3 to get a job~~ chose AWS S3 for its popularity and security despite the effort needed to create one bucket.
+
+*Pizza image by Pablo Pacheco via [Unsplash](https://unsplash.com/photos/D3Mag4BKqns)*
