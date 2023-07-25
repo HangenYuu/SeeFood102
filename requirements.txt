@@ -8,5 +8,7 @@ mlxtend
 jupyter
 ipykernel
 tensorboard
-kaggle
+einops
+transformers
+datasets
 wandb
