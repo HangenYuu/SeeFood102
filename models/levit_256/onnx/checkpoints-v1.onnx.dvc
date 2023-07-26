@@ -1,0 +1,9 @@
+outs:
+- md5: 8c9bd0de2def811f9579f1bef07a0502
+  size: 72811568
+  hash: md5
+  path: checkpoints-v1.onnx
+  cloud:
+    awsremote:
+      etag: 8c9bd0de2def811f9579f1bef07a0502
+      version_id: IFh4cUgIFQ9RUZF.ue8KIHESNiXFMB1y
