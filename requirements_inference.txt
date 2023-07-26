@@ -1,0 +1,6 @@
+onnxruntime
+fastapi
+uvicorn
+hydra-colorlog
+hydra-core
+lightning==2.0.5
