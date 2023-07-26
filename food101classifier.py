@@ -7,7 +7,6 @@ from typing import Union
 from pathlib import Path
 from torchvision.datasets import Food101
 from torch.utils.data import random_split, DataLoader
-torch.set_float32_matmul_precision('high')
 
 class Food101DataModule(L.LightningDataModule):
     def __init__(self, train_transform, test_transform, data_dir: Union[str, Path] = "data", batch_size: int = 128) -> None:
