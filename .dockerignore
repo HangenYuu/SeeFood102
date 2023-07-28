@@ -1,5 +1,6 @@
 experimental_notebooks
 .dvc
+.github
 configs
 .dvcignore
 .gitignore
@@ -9,3 +10,4 @@ model_list.txt
 requirements.txt
 train.py
 utils.py
+pablo-pacheco-D3Mag4BKqns-unsplash.jpg
