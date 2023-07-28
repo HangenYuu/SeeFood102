@@ -12,8 +12,8 @@ ENV TRANSFORMERS_CACHE=$MODEL_DIR \
 # install requirements
 RUN yum install -y git gcc-c++ wget tar gcc
 RUN wget https://sqlite.org/2023/sqlite-autoconf-3420000.tar.gz
-RUN tar xvfz sqlite-autoconf-3350500.tar.gz
-RUN cd sqlite-autoconf-3350500 && ./configure --prefix=/usr && make && make install
+RUN tar xvfz sqlite-autoconf-3420000.tar.gz
+RUN cd sqlite-autoconf-3420000 && ./configure --prefix=/usr && make && make install
 COPY requirements_inference.txt requirements_inference.txt
 RUN pip install "dvc[s3]"
 RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
