@@ -1,17 +1,26 @@
-FROM continuumio/miniconda3:23.3.1-0
-COPY ./ /app
-WORKDIR /app
+FROM amazon/aws-lambda-python:3.10.2023.07.19.04
+COPY ./ ./
 
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
+ARG MODEL_DIR=./models
+RUN mkdir $MODEL_DIR
+
+ENV TRANSFORMERS_CACHE=$MODEL_DIR \
+    TRANSFORMERS_VERBOSITY=error
 
 # install requirements
+RUN yum install git -y && yum -y install gcc-c++
 RUN pip install "dvc[s3]"
 RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu
-RUN pip install -r requirements_inference.txt
+RUN pip install -r requirements_inference.txt --no-cache-dir
+ENV PYTHONPATH "${PYTHONPATH}:./"
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 
 # initialize dvc
 RUN dvc init --no-scm
+
 # connect to remote server
 RUN dvc remote add -d awsremote s3://food101
 RUN dvc remote modify awsremote version_aware true
@@ -23,7 +32,7 @@ RUN cat .dvc/config
 
 RUN dvc pull models/levit_256/onnx/checkpoints.onnx.dvc
 
-ENV LC_ALL=C.UTF-8
-ENV LANG=C.UTF-8
+RUN python lambda_handler.py
+RUN chmod -R 0755 $MODEL_DIR
 EXPOSE 8000
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["lambda_handler.lambda_handler"]
