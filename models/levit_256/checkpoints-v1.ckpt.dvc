@@ -1,9 +1,0 @@
-outs:
-- md5: 943f107edcd067937bb51923da33b757
-  size: 216279960
-  hash: md5
-  path: checkpoints-v1.ckpt
-  cloud:
-    awsremote:
-      etag: f4c799dff51fe3da79b900eddf4eed9f-5
-      version_id: ZoYkzD7xNkRq0WLGiqnLuvy7qJTd1P56
