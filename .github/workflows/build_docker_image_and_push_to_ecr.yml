@@ -21,7 +21,7 @@ jobs:
           docker build --build-arg AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} \
                        --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
                        --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-                       --tag food102:latest .
+                       --tag s3h7a9e5/food102:latest .
       - name: Push2ECR
         id: ecr
         uses: jwalton/gh-ecr-push@v1
@@ -29,4 +29,4 @@ jobs:
           access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           region: ap-southeast-1
-          image: food102:latest
+          image: s3h7a9e5/food102:latest
