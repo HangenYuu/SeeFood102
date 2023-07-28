@@ -1,5 +1,5 @@
 FROM amazon/aws-lambda-python:3.10.2023.07.19.04
-COPY ./ ./
+
 
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
@@ -11,9 +11,11 @@ ENV TRANSFORMERS_CACHE=$MODEL_DIR \
 
 # install requirements
 RUN yum install git -y && yum -y install gcc-c++
+COPY requirements_inference.txt requirements_inference.txt
 RUN pip install "dvc[s3]"
 RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu
 RUN pip install -r requirements_inference.txt --no-cache-dir
+COPY ./ ./
 ENV PYTHONPATH "${PYTHONPATH}:./"
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
