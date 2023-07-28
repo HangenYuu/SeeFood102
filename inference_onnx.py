@@ -1,7 +1,6 @@
 from PIL import Image
 import torch
 import torchvision.transforms as T
-from utils import timing
 import onnxruntime as ort
 
 class Food101ONNXPredictor:
@@ -18,7 +17,6 @@ class Food101ONNXPredictor:
         with open('labels.txt', 'r') as f:
             self.idx_to_label = [s.strip() for s in f.readlines()]
 
-    @timing
     def predict(self, input_image):
         input_tensor = self.transform(input_image)
         input_batch = input_tensor.unsqueeze(0).numpy()
@@ -36,5 +34,3 @@ if __name__ == "__main__":
     pil_image = Image.open(image_path)
     predictor = Food101ONNXPredictor("models/levit_256/onnx/checkpoints-v1.onnx")
     print(predictor.predict(pil_image))
-    # for _ in range(20):
-    #     predictor.predict(pil_image)

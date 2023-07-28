@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Food102 Classification</h2>
+
+<form id="form" enctype="multipart/form-data">
+  <label for="img">Select image:</label>
+  <input type="file" id="img" name="image" accept="image/*">
+  <input type="submit">
+</form>
+
+<p id="result"></p>
+
+<script>
+document.getElementById('form').onsubmit = async (e) => {
+  e.preventDefault();
+  
+  const url = 'http://127.0.0.1:8000/predict'; // Your API endpoint
+  const form = document.getElementById('form');
+  const formData = new FormData(form);
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const message = `An error has occurred: ${response.status}`;
+    throw new Error(message);
+  }
+
+  const result = await response.json();
+  document.getElementById('result').textContent = JSON.stringify(result);
+};
+</script>
+
+</body>
+</html>
