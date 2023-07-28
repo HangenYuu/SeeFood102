@@ -15,7 +15,7 @@ RUN wget https://sqlite.org/2023/sqlite-autoconf-3420000.tar.gz
 RUN tar xvfz sqlite-autoconf-3420000.tar.gz
 RUN cd sqlite-autoconf-3420000 && ./configure --prefix=/usr --disable-dependency-tracking && make && make install
 COPY requirements_inference.txt requirements_inference.txt
-RUN pip install "dvc[s3]"
+RUN pip install "dvc[s3]==2.5.4"
 RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
 RUN pip install -r requirements_inference.txt --no-cache-dir
 COPY ./ ./
