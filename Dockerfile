@@ -13,7 +13,7 @@ ENV TRANSFORMERS_CACHE=$MODEL_DIR \
 RUN yum install git -y && yum -y install gcc-c++
 COPY requirements_inference.txt requirements_inference.txt
 RUN pip install "dvc[s3]"
-RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu
+RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
 RUN pip install -r requirements_inference.txt --no-cache-dir
 COPY ./ ./
 ENV PYTHONPATH "${PYTHONPATH}:./"
