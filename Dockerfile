@@ -10,7 +10,7 @@ ENV TRANSFORMERS_CACHE=$MODEL_DIR \
     TRANSFORMERS_VERBOSITY=error
 
 # install requirements
-RUN yum install -y git gcc-c++ wget tar gcc file
+RUN yum install -y git gcc-c++ wget tar gcc file make
 RUN wget https://sqlite.org/2023/sqlite-autoconf-3420000.tar.gz
 RUN tar xvfz sqlite-autoconf-3420000.tar.gz
 RUN cd sqlite-autoconf-3420000 && ./configure --prefix=/usr --disable-dependency-tracking && make && make install
