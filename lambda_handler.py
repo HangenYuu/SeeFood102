@@ -2,7 +2,7 @@ import json
 import base64
 from inference_onnx import Food101ONNXPredictor
 
-inferencing_instance = Food101ONNXPredictor("models/levit_256/onnx/checkpoints-v1.onnx")
+inferencing_instance = Food101ONNXPredictor("models/levit_256/onnx/checkpoints.onnx")
 
 def lambda_handler(event, context):
     """
