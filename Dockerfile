@@ -1,5 +1,4 @@
 FROM continuumio/miniconda3:23.3.1-0
-
 COPY ./ /app
 WORKDIR /app
 
@@ -7,7 +6,6 @@ ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 
 # install requirements
-RUN pip install awslambdaric
 RUN pip install "dvc[s3]"
 RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu
 RUN pip install -r requirements_inference.txt
@@ -27,5 +25,5 @@ RUN dvc pull models/levit_256/onnx/checkpoints.onnx.dvc
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
-
-CMD [ "lambda_handler.lambda_handler"]
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
