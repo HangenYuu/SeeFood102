@@ -25,10 +25,7 @@ RUN cat .dvc/config
 
 RUN dvc pull models/levit_256/onnx/checkpoints.onnx.dvc
 
-ENV PYTHONPATH "${PYTHONPATH}:./"
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
-RUN python lambda_handler.py
-RUN chmod -R 0755 $MODEL_DIR
 CMD [ "lambda_handler.lambda_handler"]
