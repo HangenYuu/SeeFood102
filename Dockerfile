@@ -1,16 +1,13 @@
-FROM amazon/aws-lambda-python:3.11
+FROM continuumio/miniconda3:23.3.1-0
 
 COPY ./ /app
 WORKDIR /app
 
-ARG MODEL_DIR=./models
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
-ENV TRANSFORMERS_CACHE=$MODEL_DIR \
-    TRANSFORMERS_VERBOSITY=error
 
 # install requirements
-RUN yum install git gcc-c++ -y
+RUN pip install awslambdaric
 RUN pip install "dvc[s3]"
 RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu
 RUN pip install -r requirements_inference.txt
