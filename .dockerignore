@@ -6,6 +6,7 @@ configs
 .gitignore
 ckpt_to_onnx.py
 inference.py
+app.py
 model_list.txt
 requirements.txt
 train.py
