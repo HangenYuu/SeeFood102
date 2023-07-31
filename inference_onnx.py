@@ -8,6 +8,7 @@ class Food101ONNXPredictor:
         self.ort_session = ort.InferenceSession(model_path)
         self.input_name = self.ort_session.get_inputs()[0].name
         self.transform = T.Compose([
+                    T.Lambda(lambda image: image.convert("RGB")),
                     T.Resize(248),
                     T.CenterCrop(224),
                     T.ToTensor(),

@@ -6,7 +6,7 @@ configs
 .gitignore
 ckpt_to_onnx.py
 inference.py
-app.py
+lambda_handler.py
 model_list.txt
 requirements.txt
 train.py
