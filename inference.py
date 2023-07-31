@@ -43,7 +43,7 @@ class Food101Predictor:
         return result
     
 if __name__ == "__main__":
-    image_path = "pablo-pacheco-D3Mag4BKqns-unsplash.jpg"
+    image_path = "/assets/pablo-pacheco-D3Mag4BKqns-unsplash.jpg"
     pil_image = Image.open(image_path)
     predictor = Food101Predictor("models/levit_256/checkpoints-v1.ckpt")
     print(predictor.predict(pil_image))

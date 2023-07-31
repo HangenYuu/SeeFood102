@@ -63,7 +63,4 @@ jobs:
             # Remove old container
             docker rm $IMAGE_NAME
             # Run a new container from a new image
-            docker run -d \
-            --restart always \
-            --name $IMAGE_NAME \
-            $REGISTRY/$IMAGE_NAME:latest
+            docker run -p 8000:8000 --name $IMAGE_NAME $REGISTRY/$IMAGE_NAME:latest

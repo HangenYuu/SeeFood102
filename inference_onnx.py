@@ -31,7 +31,7 @@ class Food101ONNXPredictor:
 
 
 if __name__ == "__main__":
-    image_path = "pablo-pacheco-D3Mag4BKqns-unsplash.jpg"
+    image_path = "/assets/pablo-pacheco-D3Mag4BKqns-unsplash.jpg"
     pil_image = Image.open(image_path)
     predictor = Food101ONNXPredictor("models/levit_256/onnx/checkpoints.onnx")
     print(predictor.predict(pil_image))
