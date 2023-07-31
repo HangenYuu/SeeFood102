@@ -22,6 +22,7 @@ RUN dvc remote modify --local awsremote secret_access_key $AWS_SECRET_ACCESS_KEY
 RUN cat .dvc/config
 
 RUN dvc pull models/levit_256/onnx/checkpoints.onnx.dvc
+RUN ls
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
