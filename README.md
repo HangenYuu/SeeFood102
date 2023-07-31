@@ -15,6 +15,7 @@
     - Reason: ECS requires a cluster, task, and service. The cluster was created successfully, but the service creation was failed repeatedly.
     - Possible remedy 1: Switch to an EC2 instance (straightforward, but not scalable)
     - Possible remedy 2: Switch to a Lambda function (does not allow for environment specification nor fastAPI easyness since I have to use Lambda function format)
+    - Possible remedy 3: Switch to a different vendor (Digital Ocean, GCP, etc.) (requires more setup and getting started with the platform :(()
 - [ ] Add to the GitHub action to automatically deploy the Docker image on after construction
 - [ ] Setup monitoring with AWS CloudWatch logs, Elastic Search Cluster (to stream the logs), and a dashboard service (Kibana, Grafana, EvidentlyAI, etc.)
 
