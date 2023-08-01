@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'configs/deploy.yml'
+      - 'configs/**'
       - 'app.py'
       - 'Dockerfile'
-      - '.github/workflows'
+      - '.github/workflows/**'
 
 env:
   REGISTRY: "registry.digitalocean.com/seefood102"
