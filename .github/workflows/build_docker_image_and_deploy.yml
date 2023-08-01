@@ -58,8 +58,13 @@ jobs:
       - name: Print workspace directory
         run: echo $GITHUB_WORKSPACE
       
-      - name: List workspace contents
-        run: ls /home/runner/work/SeeFood102/SeeFood102
+      - name: List directory contents and save to file
+        run: |
+          ls $GITHUB_WORKSPACE/ > directory_contents.txt
+
+      - name: Print directory contents from file
+        run: |
+          cat directory_contents.txt
       
       - name: Update deployment file
         run: sed -i "s|<IMAGE>|$REGISTRY/$IMAGE_NAME:latest|" $GITHUB_WORKSPACE/configs/deploy.yml
