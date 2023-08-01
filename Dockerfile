@@ -2,9 +2,6 @@ FROM continuumio/miniconda3:23.3.1-0
 ADD ./ /app
 WORKDIR /app
 
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
-
 # install requirements
 RUN pip install "dvc[s3]" --no-cache-dir
 RUN pip install torch==2.0.1 torchvision --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
