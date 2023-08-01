@@ -59,7 +59,7 @@ jobs:
         run: echo $GITHUB_WORKSPACE
       
       - name: List workspace contents
-        run: ls $GITHUB_WORKSPACE
+        run: ls /home/runner/work/SeeFood102/SeeFood102
       
       - name: Update deployment file
         run: sed -i "s|<IMAGE>|$REGISTRY/$IMAGE_NAME:latest|" $GITHUB_WORKSPACE/configs/deploy.yml
