@@ -29,6 +29,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+          
+      - name: Cache existing layer
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
 
       - name: Build Docker image
         run: |
@@ -55,6 +60,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-push
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+          
       - name: Print workspace directory
         run: echo $GITHUB_WORKSPACE
       
