@@ -56,10 +56,10 @@ jobs:
     needs: build-push
     steps:
       - name: Update deployment file
-      run: sed -i "s|<IMAGE>|$REGISTRY/$IMAGE_NAME:latest|" $GITHUB_WORKSPACE/configs/deploy.yml
+        run: sed -i "s|<IMAGE>|$REGISTRY/$IMAGE_NAME:latest|" $GITHUB_WORKSPACE/configs/deploy.yml
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
-      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME }}
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME }}
       
       - name: Deploy to DigitalOcean Kubernetes
         run: kubectl apply -f $GITHUB_WORKSPACE/configs/deploy.yml
