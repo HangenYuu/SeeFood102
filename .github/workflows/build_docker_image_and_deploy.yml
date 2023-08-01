@@ -17,7 +17,6 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: deployment
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -27,13 +26,15 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: $AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Build Docker image
         run: |
-          docker build --no-cache --tag $REGISTRY/$IMAGE_NAME:latest .
+          docker build --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+                       --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+                       --no-cache --tag $REGISTRY/$IMAGE_NAME:latest .
       
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
