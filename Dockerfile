@@ -1,5 +1,5 @@
 FROM continuumio/miniconda3:23.3.1-0
-COPY ./ /app
+ADD ./ /app
 WORKDIR /app
 
 ARG AWS_ACCESS_KEY_ID

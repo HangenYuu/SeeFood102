@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: food102
+  labels:
+    app: food102
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: food102
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: food102
+    spec:
+      containers:
+      - name: food102
+        image: <IMAGE>
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: 500m
+          limits:
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: food102-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: food102
