@@ -1,12 +1,14 @@
+**Update: The app is live! Head to [https://huggingface.co/spaces/HangenYuu/SeeFood102Gradio](https://huggingface.co/spaces/HangenYuu/SeeFood102Gradio) to try out.**
+
 # SeeFood102 (= SeeFood101 + MLOps)
 
 This is an iteration on my previous project [SeeFood101](https://github.com/HangenYuu/SeeFood101). In SeeFood101, I just got familiar with model training, working mostly out of Jupyter Notebook, a folder storing helper function, a Tensorboard session for training monitoring, and simple demo with Gradio [here](https://huggingface.co/spaces/HangenYuu/SeeFood101v1). For model training, this is enough.
 
 However, machine learning does not stop at model training. Usually, a model is trained to solve a business problem, and to serve this end, the model needs *deploying* to be accessible and *monitoring* to make sure that is works properly. This is called MLOps, and it's a totally different breed from model training.
 
-This project is my attempt at learning the ropes of MLOps.
+This project is my attempt at learning the ropes of MLOps. The demo is nothing impressive on its own, the interesting thing is the  
 
-Current progress visualized
+My current progress visualized
 
 ![Current progress visualized - a system architecture diagram drawn with Excalidraw, showing User, Docker, ECS, ECR, S3, GitHub Actions, Hydra, TensorBoard, PyTorch Lightning, ONNX, ONNX Runtime, and DVC](assets/SeeFood102diagram.png)
 
@@ -18,16 +20,11 @@ Current progress visualized
 - ✅ Convert the PyTorch Lightning checkpoint to ONNX weights and use ONNX Runtime for inference
 - ✅ Create the backend with FastAPI and a minimal HTML/Javascript frontend, allowing users to upload image and receive top-5 categories + probabilities
 - ✅ Containerize the backend with Docker
-- ✅ Store the Docker image in AWS Elastic Container Registry (ECR)
+- ✅ Store the Docker image in Digital Ocean Container Registry (DOCR)
 - ✅ Create a GitHub action to automatically construct the Docker image and push to ECR on pushing code to the GitHub repository.
-- ❌ Deployment - currently encountering issues.
-  - ❌ Intended options: Deploy the Docker image on AWS Elastic Container Service (ECS).
-    - Reason: ECS requires a cluster, task, and service. The cluster was created successfully, but the service creation was failed repeatedly.
-    - Possible remedy 1: Switch to a Lambda function. This does not allow for environment specification nor fastAPI easyness since I have to use Lambda function format. Because of issues with AWS based Docker image (SQLite 2 (really?) is installed while SQLite 3.8.3 at least is required for DVC) and with installing Lambda interface for external image, I abandoned this once I realized how big a time sink it is.
-    - Possible remedy 2: Switch to a different vendor (Digital Ocean, GCP, etc.) (requires more setup and getting started with the platform 😭 and possibly 💸). **I actually tried switching to Digital Ocean**. Now the workflow is SSH into a Droplet, build and run the Docker image within the Droplet every time a push happends. However, it still fails repeatedly ??? This also gives me an idea for the third option.
-    - Possible remedy 3: Use an EC2 instance. This is inherently unscalable as using a Digital Ocean Droplet above. However, it is straightforward. Big problem though: is Docker installed within EC2?
-- ❌ Add to the GitHub action to automatically deploy the Docker image after construction
-- ❌ Setup monitoring with AWS CloudWatch logs, Elastic Search Cluster (to stream the logs), and a dashboard service (Kibana, Grafana, EvidentlyAI, etc.)
+- ✅ Deployment on Digital Ocean with Kubernetes (DOKS).
+- ✅ Edit the GitHub action to automatically deploy the Docker image after construction.
+- ❓ Setup monitoring - each cloud provider has their own monitoring process. Mature ones such as AWS have more tools developed on top of this (Kibana, Grafana, etc.). For Digital Ocean, it seems that the platform has built-in simple graphing for the Droplets and email alerts. I can also use add-ons. However, most options required me to integrate in the Droplet in the first place, which I have not (uh oh). 
 
 For people looking to follow along the repo:
 
@@ -37,11 +34,12 @@ conda create -n seefood102 python=3.10
 conda activate seefood102
 pip install -r requirements.txt
 ```
+
 ## Model training
 I chose a pretrained LeVit ([paper](https://arxiv.org/pdf/2104.01136.pdf), [code](https://github.com/facebookresearch/LeViT), [weight](https://huggingface.co/timm/levit_256.fb_dist_in1k)) and then fine-tuned with all parameters unfrozen on the Food101 Dataset. The training code was written with PyTorch Lightning to reduce the amount of boilerplate and utilize the 2 GPUs I was given. I used Tensorboard to monitor the training. The training can be viewed [here](https://tensorboard.dev/experiment/gX8buBf7TJOW8RytJaCA7g/#scalars). At the end, the model achieved ~0.78 F1 and accuracy. After training, you can save your model to `.ckpt` format of PyTorch Lightning to use directly for inference, convert to ONNX format with the `ckpt_to_onnx.py` script before inference with CPU, or save your model directly to ONNX format for inference.
 
 ## Setup DVC
-I used DVC (Data Version Control), a Git-like tool for data, to track the model weight. The setup depends on your choice of cloud storage. I ~~was forced to choose S3 to increase the prospect of getting a job~~ chose AWS S3 for its popularity and security despite the initial effort needed to set things one bucket (which actually was easy compared to other things AWS offers - more on that later). In any case, from [the documentation](https://dvc.org/doc/user-guide/data-management/remote-storage/amazon-s3#custom-authentication), the steps as of July 2023 are:
+I used DVC (Data Version Control), a Git-like tool for data, to track the model weight. The setup depends on your choice of cloud storage. I chose AWS S3 for its popularity and security despite the initial effort needed to set things one bucket (which actually was easy compared to other things AWS offers). In any case, from [the documentation](https://dvc.org/doc/user-guide/data-management/remote-storage/amazon-s3#custom-authentication), the steps as of July 2023 are:
 
 1. Go to **IAM Management Console**.
 2. Create a new user (recommended) with specified permissions. Besides AWS S3, I want to use this User for the task of ECR and ECS, so I also give the User permissions for these services as needed.
@@ -105,9 +103,9 @@ To get started, you need to have a Dockerfile. It is the of how to construct the
 # I build on top of an existing image instead of reinventing the wheel
 FROM continuumio/miniconda3:23.3.1-0
 
-# Step 2: Use `COPY` to copy relevant files to the image
+# Step 2: Use `ADD` to copy relevant files to the image
 # I have a file called `.dockerignore` to list files I don't want copying just like `.gitignore`
-COPY ./ /app
+ADD ./ /app
 
 # Step 3 (Optional): Declare the working directory in the image with `WORKDIR`.
 # Because I copy the files to `/app`, I switch to `/app`.
@@ -185,9 +183,21 @@ After uploading and submitting the image, you should see a dictionary of top-5 c
 ![](assets/Screenshot%202023-07-31%20181439.png)
 
 ## Obstacles
-> Everything was smooth until deployment.
+> The journey to one application is laid with one thousand bugs.
 
-Indeed. Besides the extra learning (I enjoy this) and the countless hours spent on writing `.yaml` file for the Docker image (I do not hate this), it is smooth sailing until deployment... 
+Indeed. Besides the extra learning (I enjoy this) and the countless hours spent on writing `.yaml` file for the Docker image (I do not hate this), it is smooth sailing until deployment. And then the fun begins. Here are the mistakes that I made along the way.
+
+- ❌ Store the Docker image on AWS ECR. There is some strange interaction between Docker Desktop and ECR ([1](https://stackoverflow.com/questions/60807697/docker-login-error-storing-credentials-the-stub-received-bad-data), [2](https://stackoverflow.com/questions/65896681/exec-docker-credential-desktop-exe-executable-file-not-found-in-path)), and the supposed fixes crashed my own Docker Desktop, leading to reinstallation. I have no trouble doing this with GitHub Actions though, and then on my local computer. Apparently, the bug is fixed with the new release of Docker Desktop.
+- ❌ Deploy the Docker image on AWS Lambda function. Serverless, on-demand, auto-scale, cheap billing, can even be built from Docker image. Sounds great, right? Until you realize you need to use AWS Lambda-based image, which will have compatibility issue for DVC (which requires SQLite 3.8.3+, while the image is stuck in SQLite 2). No big deal, you can use your own image for Lambda after installing `lambdaric`. But I started running into build issue. By this point Lambda has caused me so much headache that I stopped.
+- ❌ Deploy the Docker image on AWS ECR. The steps are straightforward - cluster, task, service, then deploy the container on top of this. But the container starts failing repeatedly. And it seemed that despite scanning through the options, I missed the logging somewhere? Or does it exist? By this point, I decided that AWS was enough. The service is powerful but overwhelming. It's time to switch to something smaller - Digital Ocean. 
+- ❌ Deploy the Docker image on Digital Ocean Droplet. The workflow is similar to using an EC2 instance, but the catch is that Docker Enginer is installed within the Droplet (yes!). This is inherently unscalable, but straightforward. The GitHub Actions will SSH into the machine and run the container. But again, it failed repeatedly with no log. Fun.
+- ✅ Deploy the Docker image on Digital Ocean Kubernetes Service (DOKS). This is desperation, trying to do hard things because easy things didn't work. But miraculously, there is a log right inside GitHub Actions telling me that `app` cannot be found. Now I know the problem: I defined `WORKDIR` as `/app`, the file to run the server was `app`, and the app name was `app`!. I removed the customized `WORKDIR` command, and voila, work like a charm! 
+
+## Lessons
+- Training is easy. Deployment is hard.
+- Go for prebuilt. Never reinvent the wheel, but know enough or get a person knowing enough to make sure that you are using the right wheel.
+- Understand networking. One problem I face is connecting the container port to the machine port to the load balancer port. And then getting error as the load balancer use HTTP and IP address, while the server with Javascript wants HTTPS, the vendor willing to give me free SSL/TLS certificate wants domain name, and the domain site makes it non-obvious to point the domain to the IP address. In the end I settled for Gradio as Python is more lenient. And that's just 1 node. Imagining having a system that serves a thousand users with multiple nodes linked together.
+- Iterate quickly trumps early optimization. I sat on this project for months, claiming issues such as time, attention, money, or simply paralysis by analysis. And I got this done in 2 weeks. It is always better to get things done first, then improve the product iteratively. The alternative is sitting there scared of everything and doing nothing.
 
 ## `assets` image sources:
 - *Pizza* by Pablo Pacheco via Unsplash: https://unsplash.com/photos/D3Mag4BKqns
@@ -197,3 +207,6 @@ Indeed. Besides the extra learning (I enjoy this) and the countless hours spent 
 - *DVC Logo* from DVC website: https://dvc.org/
 - *PyTorch Lightning Logo* from Phillip Lippe website: https://phlippe.github.io/post/uvadlc-tutorials-lightning/
 - *Hydra Logo* from Facebook Research GitHub repo: https://github.com/facebookresearch/hydra
+- _Digital Ocean Product Icons_ from this presentation: https://do.co/diagram-kit
+- _Digital Ocean Logo_ from Wikimedia
+- _Gradio Logo_ from Wikimedia
