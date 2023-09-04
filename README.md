@@ -1,4 +1,4 @@
-**Update: The app is live! Head to [https://huggingface.co/spaces/HangenYuu/SeeFood102Gradio](https://huggingface.co/spaces/HangenYuu/SeeFood102Gradio) to try out.**
+**Update: The app is offline now due to the cost of cloud deployment. I was quite sad, but my wallet would get even sadder if I continue 🥲🥲🥲.**
 
 # SeeFood102 (= SeeFood101 + MLOps)
 
