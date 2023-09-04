@@ -1,4 +1,4 @@
-**Update: The app is offline now due to the cost of cloud deployment. I was quite sad, but my wallet would get even sadder if I continue 🥲🥲🥲.**
+**Update: The app is offline now due to the cost of cloud deployment. I was quite sad, but my wallet would get even sadder if I continue 🥲🥲🥲. Please contact me if you want me to put the app up again. If you are interested in hiring me, here's my resume: https://hangenyuu.github.io/resume.**
 
 # SeeFood102 (= SeeFood101 + MLOps)
 
